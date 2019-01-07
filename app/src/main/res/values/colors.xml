@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#03497D</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#ff4081</color>
+    <color name="colorFloatingActionButton">#008CEE</color>
+    <color name="colorSplashBackground">#0e80c6</color>
+    <color name="colorLogin">#0980C3</color>
+    <color name="colorLoginButton">#004684</color>
+    <color name="colorCursor">#cccccc</color>
+    <color name="head_color">#836fff</color>
+    <color name="information_title_color">#666666</color>
+    <color name="list_bg_color">#FFF4F4F4</color>
+    <color name="list_focus_color">#bdbdbd</color>
+    <color name="logoScreenBackground">#F7F7F7</color>
+
+    <!--zxing-->
+    <color name="contents_text">#000000</color>
+    <color name="encode_view">#ffffff</color>
+    <color name="possible_result_points">#ffbd21</color>
+    <color name="result_minor_text">#c0c0c0</color>
+    <color name="result_points">#99cc00</color>
+    <color name="result_text">#ffffff</color>
+    <color name="result_view">#000000</color>
+    <color name="status_text">#ffffff</color>
+    <color name="viewfinder_mask">#50000000</color>
+    <color name="react">#ffffff</color>
+    <color name="scanLineColor">#ffffff</color>
+    <color name="defaultColor">#ffffff</color>
+
+    <drawable name="checkbox">#666666</drawable>
+    <drawable name="camera_back_press">#1b1b1b</drawable>
+    <drawable name="camera_back_default">#2f2f2f</drawable>
+</resources>
