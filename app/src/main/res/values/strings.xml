@@ -9,7 +9,7 @@
     <!--collectactivity-->
     <string name="collect_page_title">样本采集</string>
     <string name="collect_page_barcode_scan_title">样本条码:</string>
-    <string name="collecttrans_page_barcode_info_title">样本信息</string>
+    <string name="collecttrans_page_barcode_info_title">样本信息(只显示近6个标本的详细信息)</string>
     <!--zxing-->
     <string name="msg_camera_framework_bug">相机被占用或没有相机权限\n请检查应用权限</string>
     <string name="button_ok">退出</string>

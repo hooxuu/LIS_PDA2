@@ -5,7 +5,6 @@ import android.content.*;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
-import android.util.Log;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -21,10 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CollectActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String ACTION = "net.xhblog.lis_pda.intent.action.CollectActivity";
@@ -38,7 +34,8 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
     private GridView grid_sampleinfo;
     private BaseAdapter mAdapter = null;
     private ArrayList<Sample> mData = null;
-    private List<Map<String, Object>> sampleinfo;
+    //更新样本信息线程
+    private Thread updateSampleInfoThread = null;
 
     //存放样本信息
     private List<Sample> sampleList = new ArrayList<>();
@@ -54,51 +51,7 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
 
         IntentFilter filter = new IntentFilter(CaptureActivity.ACTION);
         registerReceiver(broadcastReceiver, filter);
-
-        mData = new ArrayList<>();
     }
-
-    //广播接收器 接收实时扫描的条码号 然后发送给服务器进行查询
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String current_barcode = intent.getStringExtra("current_barcode");
-            queryAndUpdateCollectInfo(current_barcode, new ICallback() {
-                @Override
-                public void callback(Map<String, Object> resultmap) {
-                    if(sampleList.size() > 6) {
-                        sampleList.remove(0);
-                    }
-
-                    Sample sample = new Sample();
-                    sample.setLine1("姓名:" + resultmap.get("cname") + " " + "条码号:" +
-                            resultmap.get("serialno"));
-                    sample.setLine2("病历号:" + resultmap.get("patno") + " " + "性别:" +
-                            resultmap.get("sex") + " " + "科室:" + resultmap.get("dept") + " " + "床号:" +
-                            resultmap.get("bed"));
-                    sample.setLine3("采样人及时间:" + resultmap.get("collecter") + "," +
-                            resultmap.get("collectdatetime"));
-                    sample.setItem((String) resultmap.get("item"));
-                    sampleList.add(sample);
-                    System.out.println("========size" + sampleList.size());
-                    Log.d("=========msg:" , "" + sampleList.size());
-                    if(!sampleList.isEmpty()) {
-                        mData.addAll(sampleList);
-                        mAdapter = new MyAdapter<Sample>(mData, R.layout.item_grid_sampleinfo) {
-                            @Override
-                            public void bindView(ViewHolder holder, Sample obj) {
-                                holder.setText(R.id.sampleinfo_l1, obj.getLine1());
-                                holder.setText(R.id.sampleinfo_l2, obj.getLine2());
-                                holder.setText(R.id.sampleinfo_l3, obj.getLine3());
-                                holder.setText(R.id.sampleinfo_l4, obj.getItem());
-                            }
-                        };
-                        grid_sampleinfo.setAdapter(mAdapter);
-                    }
-                }
-            });
-        }
-    };
 
 
     @Override
@@ -137,17 +90,71 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
             if (data != null) {
 
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                //barcode_tv.setText(content);
+                barcode_tv.setText(content);
             }
         }
     }
+
+
+    //广播接收器 接收实时扫描的条码号 然后发送给服务器进行查询
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            try {
+                String current_barcode = intent.getStringExtra("current_barcode");
+                queryAndUpdateCollectInfo(current_barcode, new ICallback() {
+                    @Override
+                    public void callback(Map<String, Object> resultmap) {
+                        if(sampleList.size() > 5) {
+                            sampleList.remove(0);
+                        }
+                        Sample sample = new Sample();
+                        sample.setLine1("姓名:" + resultmap.get("cname") + " " + "条码号:" +
+                                resultmap.get("serialno"));
+                        sample.setLine2("病历号:" + resultmap.get("patno") + " " + "性别:" +
+                                resultmap.get("sex") + " " + "科室:" + resultmap.get("dept") + " " + "床号:" +
+                                resultmap.get("bed"));
+                        sample.setLine3("采样人及时间:" + resultmap.get("collecter") + "," +
+                                resultmap.get("collectdatetime"));
+                        sample.setItem((String) resultmap.get("item"));
+                        sampleList.add(sample);
+                    }
+                });
+                /**
+                 * 此处很重要,一定要等更新的那个线程结束并返回结果之后主线程在进行下一步操作,否则在扫描之后界面不显示样本的信息
+                 */
+                updateSampleInfoThread.join();
+                if(!sampleList.isEmpty()) {
+                    mData = new ArrayList<>();
+                    mData.addAll(sampleList);
+                    //反转list,让后采样的显示在上
+                    Collections.reverse(mData);
+
+                    mAdapter = new MyAdapter<Sample>(mData, R.layout.item_grid_sampleinfo) {
+                        @Override
+                        public void bindView(ViewHolder holder, Sample obj) {
+                            holder.setText(R.id.sampleinfo_l1, obj.getLine1());
+                            holder.setText(R.id.sampleinfo_l2, obj.getLine2());
+                            holder.setText(R.id.sampleinfo_l3, obj.getLine3());
+                            holder.setText(R.id.sampleinfo_l4, obj.getItem());
+                        }
+                    };
+                    grid_sampleinfo.setAdapter(mAdapter);
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+    };
+
 
     /**
      * 利用得到的条码进行查询更新采样信息
      */
     private void queryAndUpdateCollectInfo(final String barcode, final ICallback callback) {
         //请求服务器查询条码是否存在
-        new Thread(new Runnable() {
+        updateSampleInfoThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -161,6 +168,7 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
                     JSONObject json = new JSONObject(jsonresult);
                     //获取服务器返回的状态code
                     String code = json.optString("code");
+
                     /**
                      *      * 约定
                      *      * 1 --- 为设置采样成功
@@ -173,13 +181,14 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
                      *      * -8 --- 为送检信息已经设置,此时需要提示是否重新设置
                      *      */
 
-                    if("1" == code) {
-                        Map<String, Object> resultmap = saveSampleInfo(json);
-                        callback.callback(resultmap);
+                    if("1".equals(code)) {
+                        Map<String, Object> result_map = saveSampleInfo(json);
+
+                        callback.callback(result_map);
 
                         Intent intent = new Intent(ACTION);
                         intent.putExtra("code", code);
-                        intent.putExtra("barcode", (String) resultmap.get("serialno"));
+                        intent.putExtra("barcode", (String) result_map.get("serialno"));
                         sendBroadcast(intent);
                     } else {
                         Intent intent = new Intent(ACTION);
@@ -191,9 +200,9 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
-        }).start();
+        });
+        updateSampleInfoThread.start();
     }
 
     /**
@@ -206,6 +215,7 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
         resultmap.put("cname", json.optString("cname"));
         resultmap.put("sex", json.optString("sex"));
         resultmap.put("dept", json.optString("dept"));
+        resultmap.put("bed", json.optString("bed"));
         resultmap.put("collecter", json.optString("collecter"));
         resultmap.put("collectdatetime", json.optString("collectdatetime"));
 

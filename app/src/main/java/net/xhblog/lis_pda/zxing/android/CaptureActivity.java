@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.google.zxing.Result;
 import net.xhblog.lis_pda.R;
 import net.xhblog.lis_pda.activity.CollectActivity;
+import net.xhblog.lis_pda.activity.TransActivity;
 import net.xhblog.lis_pda.zxing.bean.ZxingConfig;
 import net.xhblog.lis_pda.zxing.camera.CameraManager;
 import net.xhblog.lis_pda.zxing.common.Constant;
@@ -33,16 +34,9 @@ import net.xhblog.lis_pda.zxing.view.ViewfinderView;
 import java.io.IOException;
 
 
-/**
- * @author: yzq
- * @date: 2017/10/26 15:22
- * @declare :扫一扫
- */
-
 public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.Callback, View.OnClickListener {
 
     public static final String ACTION = "net.xhblog.lis_pda.zxing.android.intent.action.CaptureActivity";
-    public static final int CAMERA_REQ_CODE = 111;
     private static final String TAG = CaptureActivity.class.getSimpleName();
     public ZxingConfig config;
     private SurfaceView previewView;
@@ -121,8 +115,11 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         /**
          * 注册广播接收器
          */
-        IntentFilter filter = new IntentFilter(CollectActivity.ACTION);
-        registerReceiver(broadcastReceiver, filter);
+        IntentFilter collect_filter = new IntentFilter(CollectActivity.ACTION);
+        registerReceiver(broadcastReceiver, collect_filter);
+
+        IntentFilter trans_filter = new IntentFilter(TransActivity.ACTION);
+        registerReceiver(broadcastReceiver, trans_filter);
     }
 
 
@@ -166,7 +163,6 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
 
 
     /**
-     * @param pm
      * @return 是否有闪光灯
      */
     public static boolean isSupportCameraLedFlash(PackageManager pm) {
@@ -442,53 +438,4 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
 
         }
     };
-
-
-//    /**
-//     * 申请权限
-//     */
-//    private void requestPermission() {
-//        // 判断当前Activity是否已经获得了该权限
-//        if (ContextCompat.checkSelfPermission(this,
-//                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//
-//            // 如果App的权限申请曾经被用户拒绝过，就需要在这里跟用户做出解释
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-//                    Manifest.permission.CAMERA)) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                builder.setTitle("条码扫描");
-//                builder.setMessage("请进入设置-应用管理-打开相机权限");
-//                builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
-//                builder.show();
-//            } else {
-//                // 进行权限请求
-//                ActivityCompat
-//                        .requestPermissions(
-//                                this,
-//                                new String[]{Manifest.permission.CAMERA},
-//                                CAMERA_REQ_CODE);
-//            }
-//        }
-//    }
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           String permissions[], int[] grantResults) {
-//        switch (requestCode) {
-//            case CAMERA_REQ_CODE: {
-//                // 如果请求被拒绝，那么通常grantResults数组为空
-//                if (grantResults.length > 0
-//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//
-//                } else {
-//                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//                    builder.setTitle("条码扫描");
-//                    builder.setMessage("条码扫描将不可用");
-//                    builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
-//                    builder.show();
-//                }
-//                return;
-//            }
-//        }
-//    }
 }

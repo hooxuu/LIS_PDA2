@@ -49,7 +49,7 @@
                 android:layout_height="30dp"
                 android:layout_marginTop="5dp"
                 app:srcCompat="@drawable/launcher_icon"
-                android:id="@+id/imageButton"/>
+                android:id="@+id/barcode_scan"/>
     </GridLayout>
     <View
             android:layout_height="0.5dp"
@@ -68,25 +68,11 @@
             android:layout_marginLeft="15dp"
             android:textStyle="bold"/>
 
-    <View
-            android:layout_height="0.5dp"
+    <GridView
+            android:id="@+id/grid_sampleinfo"
             android:layout_width="match_parent"
-            android:background="#000000"
+            android:layout_height="506dp"
             android:layout_marginTop="5dp"
-    />
-    <TextView
-            android:text="姓名:测试  性别:男  条码号:812120001"
-            android:layout_width="326dp"
-            android:layout_marginLeft="10dp"
-            android:layout_height="32dp" android:id="@+id/textView5" android:textSize="18sp"/>
-    <TextView
-            android:text="病历号:123456  外一科  55床"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_height="27dp" android:id="@+id/textView6" android:textSize="16sp"/>
-    <TextView
-            android:text="送检时间: 2018-12-01 17:55:00"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_height="29dp" android:id="@+id/textView7"/>
+            android:padding="5dp"
+            android:numColumns="1"/>
 </LinearLayout>

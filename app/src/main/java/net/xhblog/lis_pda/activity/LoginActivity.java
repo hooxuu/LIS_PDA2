@@ -1,10 +1,15 @@
 package net.xhblog.lis_pda.activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +19,7 @@ import android.widget.Toast;
 import net.xhblog.lis_pda.R;
 import net.xhblog.lis_pda.utils.ConnectionTools;
 import net.xhblog.lis_pda.utils.EditTextClearTools;
+import net.xhblog.lis_pda.zxing.android.FinishListener;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
@@ -21,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    private static final int CAMERA_REQ_CODE = 111;
     //登录请求的url
     private static final String URL = "http://192.168.50.198:8080/Lis_Pda/LoginServlet";
     // 退出时间
@@ -41,6 +48,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login_activty);
         init();
 
+        //申请相机权限
+        requestPermission();
         //点击事件,子线程请求网络
         login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,6 +141,52 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+        /**
+     * 申请权限
+     */
+    private void requestPermission() {
+        // 判断当前Activity是否已经获得了该权限
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            // 如果App的权限申请曾经被用户拒绝过，就需要在这里跟用户做出解释
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.CAMERA)) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("提示");
+                builder.setMessage("请进入设置-应用管理-打开相机权限");
+
+                builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
+                builder.show();
+            } else {
+                // 进行权限请求
+                ActivityCompat
+                        .requestPermissions(
+                                this,
+                                new String[]{Manifest.permission.CAMERA},
+                                CAMERA_REQ_CODE);
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        if(CAMERA_REQ_CODE == requestCode) {
+            // 如果请求被拒绝，那么通常grantResults数组为空
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("提示");
+                builder.setMessage("你拒绝了本软件调用摄像头,后续条码扫描功能将不可用");
+                builder.setPositiveButton(R.string.button_ok, new FinishListener(this));
+                builder.show();
+            }
+        }
     }
 
 }
