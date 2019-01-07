@@ -88,7 +88,7 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
             if (data != null) {
 
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
-                //barcode_tv.setText(content);
+                barcode_tv.setText(content);
             }
         }
     }
@@ -157,10 +157,14 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
                     SharedPreferences preferences = getSharedPreferences("userInfo",
                             Activity.MODE_PRIVATE);
                     String username = preferences.getString("username", "");
-                    ConnectionTools tools = new ConnectionTools(REQUEST_URL,
+                    ConnectionTools tools = new ConnectionTools(getApplicationContext());
+                    String ip = tools.getConfigByPropertyName("ip");
+                    String port = tools.getConfigByPropertyName("port");
+                    String projectname = tools.getConfigByPropertyName("projectname");
+                    String jsonresult = tools.getDataFromServer(
+                            "http://" + ip + ":" + port + "/" + projectname + "/UpdateNurseSendDateTimeServlet",
                             "&SerialNo=" + URLEncoder.encode(barcode, "utf-8") +
                                     "&currentUser=" + URLEncoder.encode(username, "utf-8"));
-                    String jsonresult = tools.getDataFromServer();
                     JSONObject json = new JSONObject(jsonresult);
                     //获取服务器返回的状态code
                     String code = json.optString("code");

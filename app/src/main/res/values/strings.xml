@@ -17,4 +17,6 @@
     <string name="viewfinderview_status_text2">即可自动扫描</string>
     <!-- activity_capture.xml-->
     <string name="cap_title">条码扫描</string>
+    <!-- loginactivity -->
+    <string name="confirm_btn">确定</string>
 </resources>

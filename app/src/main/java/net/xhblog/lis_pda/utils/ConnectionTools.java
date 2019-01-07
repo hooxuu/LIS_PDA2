@@ -1,24 +1,38 @@
 package net.xhblog.lis_pda.utils;
 
+import android.content.Context;
+import net.xhblog.lis_pda.R;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Properties;
 
 public class ConnectionTools {
-    private String requestUrl;
-    private String data;
     private ByteArrayOutputStream baos;
     private InputStream is;
     private OutputStream os;
+    private Context context;
+    private Properties properties = null;
 
-    public ConnectionTools(String requestUrl, String data) {
-        this.requestUrl = requestUrl;
-        this.data = data;
+    public ConnectionTools(Context context) {
+        this.context = context;
+        init();
     }
 
-    public String getDataFromServer() {
+    private void init() {
+        try {
+            properties = new Properties();
+            InputStream inputStream = context.getResources().openRawResource(R.raw.connect);
+            properties.load(inputStream);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getDataFromServer(String requestUrl, String data) {
         try {
 
             HttpURLConnection conn = (HttpURLConnection) new URL(requestUrl).openConnection();
@@ -67,7 +81,10 @@ public class ConnectionTools {
                 e.printStackTrace();
             }
         }
-
         return "";
+    }
+
+    public String getConfigByPropertyName(String propertyname) {
+        return properties.getProperty(propertyname);
     }
 }

@@ -123,10 +123,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    ConnectionTools ct = new ConnectionTools(URL,
-                            "&username=" + URLEncoder.encode(username, "utf-8") +
-                            "&password=" + URLEncoder.encode(password, "utf-8"));
-                    String respResult = ct.getDataFromServer();
+                    ConnectionTools tools = new ConnectionTools(getApplicationContext());
+                    String ip = tools.getConfigByPropertyName("ip");
+                    String port = tools.getConfigByPropertyName("port");
+                    String projectname = tools.getConfigByPropertyName("projectname");
+
+                    String respResult = tools.getDataFromServer(
+                            "http://" + ip + ":" + port + "/" + projectname + "/LoginServlet",
+                            "&username=" + URLEncoder.encode(username, "utf-8") + "&password=" +
+                                    URLEncoder.encode(password, "utf-8"));
 
                     JSONObject json = new JSONObject(respResult);
 

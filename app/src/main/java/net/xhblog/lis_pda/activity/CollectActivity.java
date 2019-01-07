@@ -23,11 +23,9 @@ import java.net.URLEncoder;
 import java.util.*;
 
 public class CollectActivity extends AppCompatActivity implements View.OnClickListener {
+
     public static final String ACTION = "net.xhblog.lis_pda.intent.action.CollectActivity";
-
     private static final int REQUEST_CODE_SCAN = 1;
-    private static final String REQUEST_URL = "http://192.168.50.198:8080/Lis_Pda/UpdateCollectTimeServlet";
-
     private AppCompatImageView btn_collect_back;
     private ImageButton barcode_scan;
     private TextView barcode_tv;
@@ -161,10 +159,15 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
                     SharedPreferences preferences = getSharedPreferences("userInfo",
                             Activity.MODE_PRIVATE);
                     String username = preferences.getString("username", "");
-                    ConnectionTools tools = new ConnectionTools(REQUEST_URL,
-                            "&SerialNo=" + URLEncoder.encode(barcode, "utf-8") +
-                                    "&currentUser=" + URLEncoder.encode(username, "utf-8"));
-                    String jsonresult = tools.getDataFromServer();
+                    ConnectionTools tools = new ConnectionTools(getApplicationContext());
+                    String ip = tools.getConfigByPropertyName("ip");
+                    String port = tools.getConfigByPropertyName("port");
+                    String projectname = tools.getConfigByPropertyName("projectname");
+
+                    String jsonresult = tools.getDataFromServer(
+                            "http://" + ip + ":" + port + "/" + projectname + "/UpdateCollectTimeServlet",
+                            "&SerialNo=" + URLEncoder.encode(barcode, "utf-8") + "&currentUser=" +
+                                    URLEncoder.encode(username, "utf-8"));
                     JSONObject json = new JSONObject(jsonresult);
                     //获取服务器返回的状态code
                     String code = json.optString("code");

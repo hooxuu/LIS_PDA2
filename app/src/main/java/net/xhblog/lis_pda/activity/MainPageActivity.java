@@ -113,17 +113,22 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onBackPressed() {
-        // 判断时间间隔
-        if (System.currentTimeMillis() - currentBackPressedTime > BACK_PRESSED_INTERVAL) {
-            currentBackPressedTime = System.currentTimeMillis();
-            Toast.makeText(this, "再按一次返回键返回登录界面", Toast.LENGTH_SHORT).show();
-        } else {
-            // 退出
-            Intent intent = new Intent();
-            intent.setClass(mContext, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("是否退出系统?");
+        builder.setPositiveButton(R.string.confirm_btn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finishAffinity();
+            }
+        });
+
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+
+        builder.show();
     }
 
 }
