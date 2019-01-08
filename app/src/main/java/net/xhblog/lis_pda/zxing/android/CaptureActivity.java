@@ -145,20 +145,16 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
 
 
         switchVisibility(bottomLayout, config.isShowbottomLayout());
-//        switchVisibility(flashLightLayout, config.isShowFlashLight());
-//        switchVisibility(albumLayout, config.isShowAlbum());
+        switchVisibility(flashLightLayout, config.isShowFlashLight());
+        switchVisibility(albumLayout, config.isShowAlbum());
 
 
         /*有闪光灯就显示手电筒按钮  否则不显示*/
-//        if (isSupportCameraLedFlash(getPackageManager())) {
-//            flashLightLayout.setVisibility(View.VISIBLE);
-//        } else {
-//            flashLightLayout.setVisibility(View.GONE);
-//        }
-
-        //不显示手电按钮和相册按钮
-        flashLightLayout.setVisibility(View.GONE);
-        albumLayout.setVisibility(View.GONE);
+        if (isSupportCameraLedFlash(getPackageManager())) {
+            flashLightLayout.setVisibility(View.VISIBLE);
+        } else {
+            flashLightLayout.setVisibility(View.GONE);
+        }
     }
 
 

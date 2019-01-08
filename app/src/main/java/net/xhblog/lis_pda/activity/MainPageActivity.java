@@ -120,6 +120,7 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 finishAffinity();
+                System.exit(0);
             }
         });
 

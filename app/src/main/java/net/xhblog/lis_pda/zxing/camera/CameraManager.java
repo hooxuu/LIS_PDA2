@@ -248,8 +248,8 @@ public final class CameraManager {
 
             int screenResolutionX = screenResolution.x;
 
-            int width = (int) (screenResolutionX * 0.6);
-            int height = width;
+            int width = (int) (screenResolutionX * 0.8);
+            int height = (int) (width * 0.7);
 
 
             /*水平居中  偏上显示*/

@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
+                tools:context="net.xhblog.lis_pda.activity.LoginActivity"
     android:id="@+id/activity_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/logoScreenBackground">
+
+    <ImageButton
+            app:srcCompat="@drawable/ic_setting"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="23dp"
+            android:id="@+id/settingbtn"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignRight="@+id/btn_login"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/iv_icon"

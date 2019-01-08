@@ -22,9 +22,9 @@ public class ZxingConfig implements Serializable {
     /*是否显示下方的其他功能布局*/
     private boolean isShowbottomLayout = true;
     /*是否显示闪光灯按钮*/
-    private boolean isShowFlashLight = true;
+    private boolean isShowFlashLight = false;
     /*是否显示相册按钮*/
-    private boolean isShowAlbum = true;
+    private boolean isShowAlbum = false;
     /*是否解析条形码*/
     private boolean isDecodeBarCode = true;
     /*是否全屏扫描*/

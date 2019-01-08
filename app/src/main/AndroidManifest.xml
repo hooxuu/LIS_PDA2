@@ -34,12 +34,8 @@
         <activity android:name=".activity.CollectActivity"/>
         <activity android:name=".activity.TransActivity"/>
         <activity android:name=".zxing.android.CaptureActivity"/>
+        <activity android:name=".activity.SettingActivity"/>
 
-        <receiver
-                android:name=".receiver.BarcodeReceiver"
-                android:enabled="true"
-                android:exported="true">
-        </receiver>
     </application>
 
 </manifest>

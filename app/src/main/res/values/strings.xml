@@ -19,4 +19,11 @@
     <string name="cap_title">条码扫描</string>
     <!-- loginactivity -->
     <string name="confirm_btn">确定</string>
+    <!-- activity_Setting -->
+    <string name="ipaddress">IP地址:</string>
+    <string name="port">端口号:</string>
+    <string name="projectname">项目名:</string>
+    <string name="savebtn">保存</string>
+    <string name="setting_page_title">连接参数</string>
+    <string name="tips">注意:如非必要,请勿修改连接参数,否则会导致程序无法运行</string>
 </resources>

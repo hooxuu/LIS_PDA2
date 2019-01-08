@@ -24,10 +24,7 @@ import java.util.*;
 
 public class TransActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String ACTION = "net.xhblog.lis_pda.intent.action.TransActivity";
-
     private static final int REQUEST_CODE_SCAN = 1;
-    private static final String REQUEST_URL = "http://192.168.50.198:8080/Lis_Pda/UpdateNurseSendDateTimeServlet";
-
     private AppCompatImageView btn_trans_back;
     private ImageButton barcode_scan;
     private TextView barcode_tv;
@@ -61,7 +58,7 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
     private void initView() {
         btn_trans_back = (AppCompatImageView) findViewById(R.id.btn_trans_back);
         barcode_scan = (ImageButton) findViewById(R.id.barcode_scan);
-        barcode_tv = (TextView) findViewById(R.id.cbarcode_content);
+        barcode_tv = (TextView) findViewById(R.id.tbarcode_content);
         grid_sampleinfo = (GridView) findViewById(R.id.grid_sampleinfo);
     }
 

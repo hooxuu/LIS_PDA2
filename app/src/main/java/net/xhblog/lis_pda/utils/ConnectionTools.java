@@ -1,9 +1,10 @@
 package net.xhblog.lis_pda.utils;
 
 import android.content.Context;
-import net.xhblog.lis_pda.R;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -16,6 +17,7 @@ public class ConnectionTools {
     private OutputStream os;
     private Context context;
     private Properties properties = null;
+    private InputStream inputStream;
 
     public ConnectionTools(Context context) {
         this.context = context;
@@ -25,10 +27,18 @@ public class ConnectionTools {
     private void init() {
         try {
             properties = new Properties();
-            InputStream inputStream = context.getResources().openRawResource(R.raw.connect);
+            inputStream = context.openFileInput("connect.properties");
             properties.load(inputStream);
         } catch (Exception e) {
             throw new RuntimeException(e);
+        } finally {
+            if(null != inputStream) {
+                try {
+                    inputStream.close();
+                } catch (IOException ie) {
+                    Log.w("IOerror", ie.getLocalizedMessage());
+                }
+            }
         }
     }
 
