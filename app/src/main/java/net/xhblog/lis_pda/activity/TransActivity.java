@@ -1,7 +1,9 @@
 package net.xhblog.lis_pda.activity;
 
-import android.app.Activity;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import net.xhblog.lis_pda.R;
 import net.xhblog.lis_pda.adapter.MyAdapter;
 import net.xhblog.lis_pda.entity.Sample;
+import net.xhblog.lis_pda.entity.User;
 import net.xhblog.lis_pda.utils.ConnectionTools;
 import net.xhblog.lis_pda.zxing.android.CaptureActivity;
 import net.xhblog.lis_pda.zxing.common.Constant;
@@ -149,9 +152,9 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void run() {
                 try {
-                    SharedPreferences preferences = getSharedPreferences("userInfo",
-                            Activity.MODE_PRIVATE);
-                    String username = preferences.getString("username", "");
+                    Intent mainintent = getIntent();
+                    User loginuser = (User) mainintent.getSerializableExtra("loginuser");
+
                     ConnectionTools tools = new ConnectionTools(getApplicationContext());
                     String ip = tools.getConfigByPropertyName("ip");
                     String port = tools.getConfigByPropertyName("port");
@@ -159,7 +162,7 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
                     String jsonresult = tools.getDataFromServer(
                             "http://" + ip + ":" + port + "/" + projectname + "/UpdateNurseSendDateTimeServlet",
                             "&SerialNo=" + URLEncoder.encode(barcode, "utf-8") +
-                                    "&currentUser=" + URLEncoder.encode(username, "utf-8"));
+                                    "&currentUser=" + URLEncoder.encode(loginuser.getCname(), "utf-8"));
                     JSONObject json = new JSONObject(jsonresult);
                     //获取服务器返回的状态code
                     String code = json.optString("code");

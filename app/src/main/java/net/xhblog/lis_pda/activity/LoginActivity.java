@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.*;
+import me.leefeng.promptlibrary.PromptDialog;
 import net.xhblog.lis_pda.R;
 import net.xhblog.lis_pda.entity.User;
 import net.xhblog.lis_pda.utils.*;
@@ -55,6 +56,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     // 退出间隔
     private static final int BACK_PRESSED_INTERVAL = 2000;
     private SharedPreferences preferences;
+    private PromptDialog promptDialog;
 
 
     @Override
@@ -440,6 +442,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplicationContext(), "工号或密码不能为空", Toast.LENGTH_LONG).show();
             return;
         }
+
+        promptDialog = new PromptDialog(LoginActivity.this);
+        promptDialog.showLoading("正在登录");
         //跳转到首页
         userLogin(usr, psw, new ICallback() {
             @Override
@@ -454,7 +459,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     intent.setClass(getApplicationContext(), MainPageActivity.class);
 
                     if(saveinfo.isChecked()) {
-                        //SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
                         editor = preferences.edit();
                         editor.putString("password", (String) resultmap.get("password"));
                         editor.putString("shortcode", (String) resultmap.get("shortCode"));
@@ -476,12 +480,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     loginuser.setCname((String) resultmap.get("CName"));
                     loginuser.setShortcode((String) resultmap.get("shortCode"));
                     intent.putExtra("loginuser", loginuser);
-
                     startActivity(intent);
-                    Looper.prepare();
-                    Toast.makeText(getApplicationContext(), loginuser.getCname() +
-                            ": 登录成功", Toast.LENGTH_LONG).show();
-                    Looper.loop();
                 }
             }
         });
@@ -507,9 +506,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     loginuser.setShortcode((String) resultmap.get("shortCode"));
                     intent.putExtra("loginuser", loginuser);
                     startActivity(intent);
-                    Looper.prepare();
-                    Toast.makeText(getApplicationContext(), "自动登录成功", Toast.LENGTH_LONG).show();
-                    Looper.loop();
+//                    Looper.prepare();
+//                    Toast.makeText(getApplicationContext(), "自动登录成功", Toast.LENGTH_LONG).show();
+//                    Looper.loop();
                 }
             }
         });

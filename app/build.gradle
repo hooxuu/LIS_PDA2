@@ -39,4 +39,5 @@ dependencies {
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'pub.devrel:easypermissions:1.0.1'
     implementation 'org.jetbrains:annotations-java5:15.0'
+    implementation 'com.github.limxing:Android-PromptDialog:1.1.3'
 }
