@@ -29,8 +29,6 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
     private ImageButton barcode_scan;
     private TextView barcode_tv;
     private GridView grid_sampleinfo;
-    private BaseAdapter mAdapter = null;
-    private ArrayList<Sample> mData = null;
     //更新样本信息线程
     private Thread updateTransInfoThread = null;
     //存放样本信息
@@ -120,12 +118,12 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
                  */
                 updateTransInfoThread.join();
                 if(!sampleList.isEmpty()) {
-                    mData = new ArrayList<>();
+                    ArrayList<Sample> mData = new ArrayList<>();
                     mData.addAll(sampleList);
                     //反转list,让后送检的显示在上
                     Collections.reverse(mData);
 
-                    mAdapter = new MyAdapter<Sample>(mData, R.layout.item_grid_sampleinfo) {
+                    BaseAdapter mAdapter = new MyAdapter<Sample>(mData, R.layout.item_grid_sampleinfo) {
                         @Override
                         public void bindView(ViewHolder holder, Sample obj) {
                             holder.setText(R.id.sampleinfo_l1, obj.getLine1());
@@ -205,7 +203,7 @@ public class TransActivity extends AppCompatActivity implements View.OnClickList
     /**
      * 保存返回的信息到map
      */
-    private Map<String, Object> saveSampleInfo(JSONObject json) throws Exception {
+    private Map<String, Object> saveSampleInfo(@org.jetbrains.annotations.NotNull JSONObject json) throws Exception {
         Map<String, Object> resultmap = new HashMap<>();
         resultmap.put("serialno", json.optString("serialno"));
         resultmap.put("patno", json.optString("patno"));

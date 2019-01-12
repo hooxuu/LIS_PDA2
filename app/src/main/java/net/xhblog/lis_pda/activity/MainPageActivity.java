@@ -1,6 +1,5 @@
 package net.xhblog.lis_pda.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -14,23 +13,13 @@ import android.widget.*;
 import net.xhblog.lis_pda.R;
 import net.xhblog.lis_pda.adapter.MyAdapter;
 import net.xhblog.lis_pda.entity.Icon;
+import net.xhblog.lis_pda.entity.User;
 
 import java.util.ArrayList;
 
 public class MainPageActivity extends AppCompatActivity implements View.OnClickListener {
     private Context mContext;
     private GridView grid_photo;
-    private BaseAdapter mAdapter = null;
-    private ArrayList<Icon> mData = null;
-
-    //退出确认框
-    private AlertDialog alert = null;
-    private AlertDialog.Builder builder = null;
-
-    // 退出时间
-    private long currentBackPressedTime = 0;
-    // 退出间隔
-    private static final int BACK_PRESSED_INTERVAL = 2000;
     private TextView tv;
     private AppCompatImageView btn_back;
 
@@ -41,18 +30,16 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
         initView();
 
         btn_back.setOnClickListener(this);
-
-        SharedPreferences preferences = getSharedPreferences("userInfo",
-                Activity.MODE_PRIVATE);
-        String username = preferences.getString("username", "");
-        tv.setText(String.format(getResources().getString(R.string.currentuser), username));
+        Intent intent = getIntent();
+        User user = (User) intent.getSerializableExtra("loginuser");
+        tv.setText(String.format(getResources().getString(R.string.currentuser), user.getCname()));
 
         //设置功能图标等
-        mData = new ArrayList<>();
-        mData.add(new Icon(R.mipmap.iv_sample_collect, "样本采集"));
-        mData.add(new Icon(R.mipmap.iv_sample_trans, "样本送检"));
+        ArrayList<Icon> mData = new ArrayList<>();
+        mData.add(new Icon(R.mipmap.iv_sample_collect1, "样本采集"));
+        mData.add(new Icon(R.mipmap.iv_sample_trans1, "样本送检"));
 
-        mAdapter = new MyAdapter<Icon>(mData, R.layout.item_grid_icon) {
+        BaseAdapter mAdapter = new MyAdapter<Icon>(mData, R.layout.item_grid_icon) {
             @Override
             public void bindView(ViewHolder holder, Icon obj) {
                 holder.setImageResource(R.id.img_icon, obj.getId());
@@ -86,28 +73,28 @@ public class MainPageActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        final Intent intent = new Intent();
-        switch (view.getId()) {
-            case R.id.btn_back :
-                builder = new AlertDialog.Builder(mContext);
-                alert = builder.setIcon(R.drawable.loginout)
-                        .setTitle("退出提示：")
-                        .setMessage("你确定要退出当前用户吗?")
-                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {}
-                        })
-                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(mContext, "退出成功", Toast.LENGTH_SHORT).show();
-                                intent.setClass(mContext, LoginActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        }).create();//创建AlertDialog对象
-                alert.show();
-                break;
+        if(R.id.btn_back == view.getId()) {
+            final Intent intent = new Intent();
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            AlertDialog alert = builder.setIcon(R.drawable.loginout)
+                    .setTitle("退出提示：")
+                    .setMessage("你确定要退出当前用户吗?")
+                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            SharedPreferences sharedPreferences = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+                            sharedPreferences.edit().putBoolean("autologin", false).apply();
+                            Toast.makeText(mContext, "退出成功", Toast.LENGTH_SHORT).show();
+                            intent.setClass(mContext, LoginActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                    }).create();//创建AlertDialog对象
+            alert.show();
         }
     }
 

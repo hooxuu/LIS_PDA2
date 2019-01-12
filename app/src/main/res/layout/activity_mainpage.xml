@@ -9,7 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_gravity="top"
-            android:background="#99000000">
+            android:background="#5EB7D5">
 
         <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/btn_back"

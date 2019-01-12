@@ -43,9 +43,10 @@ public class ConnectionTools {
     }
 
     public String getDataFromServer(String requestUrl, String data) {
+        HttpURLConnection conn = null;
         try {
 
-            HttpURLConnection conn = (HttpURLConnection) new URL(requestUrl).openConnection();
+            conn = (HttpURLConnection) new URL(requestUrl).openConnection();
             conn.setRequestMethod("POST");
             conn.setReadTimeout(5000);
             conn.setConnectTimeout(5000);
@@ -53,6 +54,7 @@ public class ConnectionTools {
             conn.setDoInput(true);
             // Post方式不能缓存,需手动设置为false
             conn.setUseCaches(false);
+            conn.connect();
 
             //获取输出流
             os = conn.getOutputStream();
@@ -64,7 +66,7 @@ public class ConnectionTools {
                 is = conn.getInputStream();
                 baos = new ByteArrayOutputStream();
 
-                int len = 0;
+                int len;
                 byte[] buffer = new byte[1024];
                 while(-1 != (len = is.read(buffer))) {
                     baos.write(buffer, 0, len);
@@ -90,9 +92,14 @@ public class ConnectionTools {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if(conn != null) {
+                conn.disconnect();
+            }
         }
         return "";
     }
+
+
 
     public String getConfigByPropertyName(String propertyname) {
         return properties.getProperty(propertyname);

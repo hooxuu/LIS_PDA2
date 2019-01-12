@@ -6,7 +6,7 @@
     <color name="colorFloatingActionButton">#008CEE</color>
     <color name="colorSplashBackground">#0e80c6</color>
     <color name="colorLogin">#0980C3</color>
-    <color name="colorLoginButton">#004684</color>
+    <color name="colorLoginButton">#5EB7D5</color>
     <color name="colorCursor">#cccccc</color>
     <color name="head_color">#836fff</color>
     <color name="information_title_color">#666666</color>
@@ -27,6 +27,10 @@
     <color name="react">#ffffff</color>
     <color name="scanLineColor">#ff0000</color>
     <color name="defaultColor">#ffffff</color>
+
+    <!--download-->
+    <color name="red">#0980C3</color>
+    <color name="white">#ffffff</color>
 
     <drawable name="checkbox">#666666</drawable>
     <drawable name="camera_back_press">#1b1b1b</drawable>

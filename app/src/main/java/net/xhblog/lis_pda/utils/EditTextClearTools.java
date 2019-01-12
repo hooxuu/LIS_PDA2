@@ -26,7 +26,6 @@ public class EditTextClearTools {
             @Override
             public void afterTextChanged(Editable s) {
                 //如果有输入内容长度大于0那么显示clear按钮
-                String str = s + "" ;
                 if (s.length() > 0){
                     iv.setVisibility(View.VISIBLE);
                 }else{

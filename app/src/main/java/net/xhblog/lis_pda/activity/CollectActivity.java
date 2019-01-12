@@ -30,8 +30,6 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
     private ImageButton barcode_scan;
     private TextView barcode_tv;
     private GridView grid_sampleinfo;
-    private BaseAdapter mAdapter = null;
-    private ArrayList<Sample> mData = null;
     //更新样本信息线程
     private Thread updateSampleInfoThread = null;
 
@@ -118,17 +116,16 @@ public class CollectActivity extends AppCompatActivity implements View.OnClickLi
                         sampleList.add(sample);
                     }
                 });
-                /**
-                 * 此处很重要,一定要等更新的那个线程结束并返回结果之后主线程在进行下一步操作,否则在扫描之后界面不显示样本的信息
-                 */
+
+                //此处很重要,一定要等更新的那个线程结束并返回结果之后主线程在进行下一步操作,否则在扫描之后界面不显示样本的信息
                 updateSampleInfoThread.join();
                 if(!sampleList.isEmpty()) {
-                    mData = new ArrayList<>();
+                    ArrayList<Sample> mData = new ArrayList<>();
                     mData.addAll(sampleList);
                     //反转list,让后采样的显示在上
                     Collections.reverse(mData);
 
-                    mAdapter = new MyAdapter<Sample>(mData, R.layout.item_grid_sampleinfo) {
+                    BaseAdapter mAdapter = new MyAdapter<Sample>(mData, R.layout.item_grid_sampleinfo) {
                         @Override
                         public void bindView(ViewHolder holder, Sample obj) {
                             holder.setText(R.id.sampleinfo_l1, obj.getLine1());

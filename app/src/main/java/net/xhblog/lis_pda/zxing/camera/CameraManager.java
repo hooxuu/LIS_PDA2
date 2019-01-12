@@ -152,11 +152,15 @@ public final class CameraManager {
      */
     public synchronized void closeDriver() {
         if (camera != null) {
+            if (previewing) {
+                camera.stopPreview();
+            }
             camera.release();
             camera = null;
             // Make sure to clear these each time we close the camera, so that
             // any scanning rect
             // requested by intent is forgotten.
+            previewing = false;
             framingRect = null;
             framingRectInPreview = null;
         }
